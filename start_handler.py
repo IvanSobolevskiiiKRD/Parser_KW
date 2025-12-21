@@ -10,9 +10,11 @@ import base64
 import request as rq
 import Text as Text
 import stark_kb as start_kb
+import os
 
 
 router = Router()
+current_directory = os.getcwd()
 
 class Answer_order(StatesGroup):
     id_worker = State()
@@ -63,10 +65,31 @@ async def start(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == "otpravka")
 async def start(callback: CallbackQuery, state: FSMContext):
     data_states = await state.get_data()
+
     await rq.edit_data_order(data_states["id_order"], "answer_worker", data_states["id_worker"])
     await rq.edit_data_order(data_states["id_order"], "answer_worker", data_states["answer"])
     await rq.edit_data_order(data_states["id_order"], "price_worker", data_states["price"])
     await rq.edit_data_order(data_states["id_order"], "lead_time", data_states["lead_time"])
+    data_order = await rq.get_data_one_order_by_id(data_states["id_order"])
+    data_order = data_order.__dict__
+
+    directory_user = f"{current_directory}\\{data_states["id_worker"]}"
+
+    with open(f"{directory_user}\\price.txt", "w", encoding='utf-8') as f:
+        f.write(data_states["price"])
+
+    with open(f"{directory_user}\\url.txt", "w", encoding='utf-8') as f:
+        f.write(data_order["url"])
+
+    with open(f"{directory_user}\\name_order.txt", "w", encoding='utf-8') as f:
+        f.write(data_order["name_order"])
+
+    with open(f"{directory_user}\\lead_time.txt", "w", encoding='utf-8') as f:
+        f.write(data_order["lead_time"])
+
+    with open(f"{directory_user}\\answer.txt", "w", encoding='utf-8') as f:
+        f.write(data_order["answer"])
+
     await callback.message.answer(text=Text.otpravka)
 
 
