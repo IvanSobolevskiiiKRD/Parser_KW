@@ -82,13 +82,13 @@ async def start(callback: CallbackQuery, state: FSMContext):
         f.write(data_order["url"])
 
     with open(f"{directory_user}\\name_order.txt", "w", encoding='utf-8') as f:
-        f.write(data_order["name_order"])
+        f.write(data_states["name_order"])
 
     with open(f"{directory_user}\\lead_time.txt", "w", encoding='utf-8') as f:
-        f.write(data_order["lead_time"])
+        f.write(data_states["lead_time"])
 
     with open(f"{directory_user}\\answer.txt", "w", encoding='utf-8') as f:
-        f.write(data_order["answer"])
+        f.write(data_states["answer"])
 
     await callback.message.answer(text=Text.otpravka)
 
