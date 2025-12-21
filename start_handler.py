@@ -50,7 +50,7 @@ async def start(callback: CallbackQuery, state: FSMContext):
     data_worker = await rq.get_data_one_worker_by_id(data_states["id_worker"])
     data_worker = data_worker.__dict__
 
-    await callback.message.answer(text=Text.send_otklik.format(data_worker["name"], data_worker["name_order"], data_states["price"],
+    await callback.message.answer(text=Text.send_otklik.format(data_worker["name"], data_states["name_order"], data_states["price"],
                                                       data_states["lead_time"], data_states["answer"],),
                                                       reply_markup=start_kb.access_answer)
 
@@ -145,6 +145,6 @@ async def start(message: Message, state: FSMContext):
     data_worker = await rq.get_data_one_worker_by_id(data_states["id_worker"])
     data_worker = data_worker.__dict__
 
-    await message.answer(text=Text.send_otklik.format(data_worker["name"], data_worker["name_order"], data_states["price"],
+    await message.answer(text=Text.send_otklik.format(data_worker["name"], data_states["name_order"], data_states["price"],
                                                       data_states["lead_time"], data_states["answer"],),
                                                       reply_markup=start_kb.access_answer)
