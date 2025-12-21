@@ -18,6 +18,7 @@ class Answer_order(StatesGroup):
     id_worker = State()
     id_order = State()
     price = State()
+    name_order = State()
     lead_time = State()
     answer = State()
 
@@ -32,8 +33,8 @@ async def start(message: Message, command: CommandObject, state: FSMContext):
             await state.set_state(Answer_order.id_order)
             await state.update_data(id_order=id_order)
             await state.update_data(id_worker=id_worker)
-            await state.set_state(Answer_order.price)
-            await message.answer(Text.price)
+            await state.set_state(Answer_order.name_order)
+            await message.answer(Text.name_zadacha)
 
 @router.callback_query(F.data == "rerite_otklik")
 async def start(callback: CallbackQuery, state: FSMContext):
@@ -47,7 +48,7 @@ async def start(callback: CallbackQuery, state: FSMContext):
     data_worker = await rq.get_data_one_worker_by_id(data_states["id_worker"])
     data_worker = data_worker.__dict__
 
-    await callback.message.answer(text=Text.send_otklik.format(data_worker["name"], data_states["price"],
+    await callback.message.answer(text=Text.send_otklik.format(data_worker["name"], data_worker["name_order"], data_states["price"],
                                                       data_states["lead_time"], data_states["answer"],),
                                                       reply_markup=start_kb.access_answer)
 
@@ -68,6 +69,12 @@ async def start(callback: CallbackQuery, state: FSMContext):
     await rq.edit_data_order(data_states["id_order"], "lead_time", data_states["lead_time"])
     await callback.message.answer(text=Text.otpravka)
 
+
+@router.message(Answer_order.name_order)
+async def start(message: Message, state: FSMContext):
+    await state.update_data(name_order=message.text)
+    await state.set_state(Answer_order.price)
+    await message.answer(text=Text.price)
 
 @router.message(Answer_order.price)
 async def start(message: Message, state: FSMContext):
@@ -115,6 +122,6 @@ async def start(message: Message, state: FSMContext):
     data_worker = await rq.get_data_one_worker_by_id(data_states["id_worker"])
     data_worker = data_worker.__dict__
 
-    await message.answer(text=Text.send_otklik.format(data_worker["name"], data_states["price"],
+    await message.answer(text=Text.send_otklik.format(data_worker["name"], data_worker["name_order"], data_states["price"],
                                                       data_states["lead_time"], data_states["answer"],),
                                                       reply_markup=start_kb.access_answer)
