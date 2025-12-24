@@ -1,17 +1,15 @@
-from aiogram import F, Router, types, Bot
+from aiogram import F, Router
 from aiogram.filters import CommandStart, CommandObject
 from aiogram.types import Message, CallbackQuery
-from aiogram.enums.parse_mode import ParseMode
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
-from datetime import datetime
 import requests
 import base64
 import request as rq
 import Text as Text
 import stark_kb as start_kb
 import os
-
+import subprocess
 
 router = Router()
 current_directory = os.getcwd()
@@ -73,6 +71,12 @@ async def start(callback: CallbackQuery, state: FSMContext):
     data_order = await rq.get_data_one_order_by_id(data_states["id_order"])
     data_order = data_order.__dict__
 
+    data_worker = await rq.get_data_one_worker_by_id(data_states["id_worker"])
+    data_worker = data_worker.__dict__
+
+    otlik_col = data_worker["otklikow"]
+    await rq.edit_data_worker(data_states["id_worker"], "otklikow", otlik_col - 1)
+
     directory_user = f"{current_directory}\\{data_states["id_worker"]}"
 
     with open(f"{directory_user}\\price.txt", "w", encoding='utf-8') as f:
@@ -90,6 +94,8 @@ async def start(callback: CallbackQuery, state: FSMContext):
     with open(f"{directory_user}\\answer.txt", "w", encoding='utf-8') as f:
         f.write(data_states["answer"])
 
+    path_exe = f"{directory_user}\\RemoteExecuteScriptSilent.exe"
+    subprocess.Popen([path_exe])
     await callback.message.answer(text=Text.otpravka)
 
 

@@ -33,3 +33,8 @@ async def get_data_all_user():
 async def get_data_one_worker_by_id(id):
     async with async_session() as session:
         return await session.scalar(select(Worker).where(Worker.id == id))
+
+async def edit_data_worker(id_order, col, new_data):
+    async with async_session() as session:
+        await session.execute(update(Worker).where(Worker.id == id_order).values(**{col: new_data}))
+        await session.commit()

@@ -1,5 +1,6 @@
 new_order = """
 Название задачи - <b>{}</b>
+Ссылка - {}
 
 Описание - <blockquote>{}</blockquote>
 

@@ -66,7 +66,7 @@ async def parse_images(request: NewOrder_Data):
         reply_markup['inline_keyboard'].append(button)
 
     chat_id = '816427281'
-    text = Text.new_order.format(name_oder, description_ai, price_customer, price_ai, lead_time_ai)
+    text = Text.new_order.format(url_order, name_oder, description_ai, price_customer, price_ai, lead_time_ai)
     url = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
     params = {'chat_id': chat_id, 'text': text, 'parse_mode': 'HTML', 'reply_markup': json.dumps(reply_markup)}
     response = requests.post(url, params=params)
